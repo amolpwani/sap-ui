@@ -1,0 +1,25 @@
+specVersion: "3.1"
+metadata:
+  name: ierp-dms-custom-quotation-ui-btp
+type: application
+server:
+  customMiddleware:
+    - name: fiori-tools-proxy
+      afterMiddleware: compression
+      configuration:
+        ignoreCertErrors: true
+        ui5:
+          path:
+            - /resources
+            - /test-resources
+          url: https://ui5.sap.com
+        backend:
+          - path: /catalog
+            url: http://localhost:8080
+            pathPrefix: /odata/v4/CatalogService
+    - name: fiori-tools-appreload
+      afterMiddleware: compression
+      configuration:
+        port: 35729
+        path: webapp
+        delay: 300

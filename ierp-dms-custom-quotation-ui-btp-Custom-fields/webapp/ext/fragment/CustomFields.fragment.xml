@@ -1,0 +1,57 @@
+<core:FragmentDefinition 
+    xmlns:core="sap.ui.core" 
+    xmlns="sap.m" 
+    xmlns:macros="sap.fe.macros"
+    xmlns:form="sap.ui.layout.form">
+    
+    <!-- Custom Fields Tab Content - 3 Dropdowns -->
+    <VBox class="sapUiSmallMargin">
+        
+        <form:SimpleForm 
+            editable="true" 
+            layout="ResponsiveGridLayout"
+            labelSpanXL="4"
+            labelSpanL="4"
+            labelSpanM="4"
+            emptySpanXL="0"
+            emptySpanL="0"
+            emptySpanM="0"
+            columnsXL="1"
+            columnsL="1"
+            columnsM="1">
+            <form:content>
+                
+                <!-- MFG Site Dropdown -->
+                <Label text="MFG Site" required="true" />
+                <macros:Field 
+                    id="mfgSiteField" 
+                    metaPath="MfgSiteCode" 
+                    editMode="Editable" />
+
+                <!-- Ship From Dropdown -->
+                <Label text="Ship From" required="true" />
+                <macros:Field 
+                    id="shipFromField" 
+                    metaPath="ShipFromSiteCode" 
+                    editMode="Editable" />
+
+                <!-- Proto Type Dropdown -->
+                <Label text="Proto Type" required="true" />
+                <macros:Field 
+                    id="protoTypeField" 
+                    metaPath="ProtoTypeSiteCode" 
+                    editMode="Editable" />
+
+            </form:content>
+        </form:SimpleForm>
+        
+        <!-- Save Button -->
+        <HBox justifyContent="End" class="sapUiSmallMarginTop">
+            <Button 
+                text="Save Custom Fields" 
+                type="Emphasized" 
+                press="com.ford.quotation.ui.ext.CustomFieldsHandler.onSaveCustomFields"
+                icon="sap-icon://save" />
+        </HBox>
+    </VBox>
+</core:FragmentDefinition>

@@ -1,0 +1,20 @@
+<core:FragmentDefinition 
+    xmlns:core="sap.ui.core" 
+    xmlns="sap.m" 
+    xmlns:form="sap.ui.layout.form">
+    
+    <!-- Section 1 - Questions -->
+    <VBox class="sapUiSmallMargin">
+        <form:SimpleForm editable="true" layout="ResponsiveGridLayout">
+            <form:content>
+                
+                <Label text="Question 1" />
+                <Input value="" placeholder="Enter answer..." />
+
+                <Label text="Question 2" />
+                <Input value="" placeholder="Enter answer..." />
+
+            </form:content>
+        </form:SimpleForm>
+    </VBox>
+</core:FragmentDefinition>
