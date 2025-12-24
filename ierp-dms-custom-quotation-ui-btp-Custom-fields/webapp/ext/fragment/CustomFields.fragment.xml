@@ -3,8 +3,8 @@
     xmlns="sap.m" 
     xmlns:form="sap.ui.layout.form">
     
-    <!-- Custom Fields Section with Professional Styling -->
-    <VBox class="sapUiSmallMargin">
+    <!-- Custom Fields Section - No Scrollbar -->
+    <VBox class="sapUiSmallMargin" height="auto">
         
         <form:SimpleForm 
             editable="true" 
@@ -77,8 +77,15 @@
             </form:content>
         </form:SimpleForm>
         
-        <!-- Save Button aligned to left -->
+        <!-- Action Buttons -->
         <HBox class="sapUiSmallMarginTop sapUiSmallMarginBegin">
+            <Button 
+                id="backBtn"
+                text="Back to List" 
+                type="Default" 
+                press="com.ford.quotation.ui.ext.CustomFieldsHandler.onBackPress"
+                icon="sap-icon://nav-back"
+                class="sapUiTinyMarginEnd" />
             <Button 
                 id="saveCustomFieldsBtn"
                 text="Save Custom Fields" 

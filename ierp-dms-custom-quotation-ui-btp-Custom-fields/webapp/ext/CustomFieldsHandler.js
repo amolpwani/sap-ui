@@ -7,6 +7,14 @@ sap.ui.define([
 
     return {
         /**
+         * Handler for Back button
+         * Navigates back to the list
+         */
+        onBackPress: function(oEvent) {
+            window.history.back();
+        },
+
+        /**
          * Handler for Save button in Custom Fields section
          * Saves the values of MfgSiteCode, ShipFromSiteCode, and ProtoTypeSiteCode
          */
@@ -92,21 +100,25 @@ sap.ui.define([
             oModel.submitBatch("updateGroup").then(function() {
                 oView.setBusy(false);
                 
-                // Show success toast message
-                var sMessage = "Custom fields saved successfully! ";
-                if (sMfgSiteCode) sMessage += "MFG Site: " + sMfgSiteCode + " ";
-                if (sProtoTypeSiteCode) sMessage += "Proto Type: " + sProtoTypeSiteCode + " ";
-                if (sShipFromSiteCode) sMessage += "Ship From: " + sShipFromSiteCode;
+                // Build success message
+                var sMessage = "✓ Custom fields saved successfully!";
+                var aValues = [];
+                if (sMfgSiteCode) aValues.push("MFG: " + sMfgSiteCode);
+                if (sProtoTypeSiteCode) aValues.push("Proto: " + sProtoTypeSiteCode);
+                if (sShipFromSiteCode) aValues.push("Ship: " + sShipFromSiteCode);
                 
+                if (aValues.length > 0) {
+                    sMessage += " [" + aValues.join(", ") + "]";
+                }
+                
+                // Show success toast
                 MessageToast.show(sMessage, {
-                    duration: 3000,
-                    width: "25em"
+                    duration: 4000,
+                    width: "30em",
+                    at: "center bottom"
                 });
                 
-                // Navigate back to list
-                setTimeout(function() {
-                    window.history.back();
-                }, 1000);
+                console.log("Save successful:", sMessage);
                 
             }).catch(function(oError) {
                 oView.setBusy(false);
