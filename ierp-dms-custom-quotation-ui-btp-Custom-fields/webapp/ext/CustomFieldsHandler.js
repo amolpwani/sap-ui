@@ -41,6 +41,8 @@ sap.ui.define([
             while (oView && !oView.getModel) {
                 oView = oView.getParent();
             }
+
+            window.alert("Data saved successfully.");
             
             if (!oView) {
                 try {
@@ -159,50 +161,53 @@ sap.ui.define([
                 console.log("MessageToast.show available:", typeof MessageToast.show === "function");
                 
                 // Show success message - try multiple approaches
-                setTimeout(function() {
-                    // First try: MessageToast with button reference
-                    if (typeof MessageToast !== "undefined" && typeof MessageToast.show === "function") {
-                        try {
-                            MessageToast.show(sMessage, {
-                                duration: 5000,
-                                width: "auto",
-                                my: "center bottom",
-                                at: "center bottom",
-                                of: oSaveButton
-                            });
-                            console.log("✓ MessageToast shown successfully");
-                            return;
-                        } catch (e1) {
-                            console.warn("MessageToast with button failed:", e1);
-                        }
+                // First try: MessageToast with button reference
+                if (typeof MessageToast !== "undefined" && typeof MessageToast.show === "function") {
+                    try {
+                        MessageToast.show(sMessage, {
+                            duration: 5000,
+                            width: "auto",
+                            my: "center bottom",
+                            at: "center bottom",
+                            of: oSaveButton
+                        });
+                        console.log("✓ MessageToast shown successfully");
+                    } catch (e1) {
+                        console.warn("MessageToast with button failed:", e1);
                         
                         // Second try: MessageToast simple
                         try {
                             MessageToast.show(sMessage);
                             console.log("✓ MessageToast shown (simple)");
-                            return;
                         } catch (e2) {
                             console.warn("MessageToast simple failed:", e2);
+                            
+                            // Third try: MessageBox.success
+                            if (typeof MessageBox !== "undefined" && typeof MessageBox.success === "function") {
+                                try {
+                                    MessageBox.success(sMessage, {
+                                        title: "Success"
+                                    });
+                                    console.log("✓ MessageBox.success shown");
+                                } catch (e3) {
+                                    console.warn("MessageBox.success failed:", e3);
+                                    
+                                    // Last resort: alert
+                                    console.error("All message display methods failed, using alert");
+                                    alert(sMessage);
+                                }
+                            } else {
+                                // Last resort: alert
+                                console.error("MessageBox not available, using alert");
+                                alert(sMessage);
+                            }
                         }
                     }
-                    
-                    // Third try: MessageBox.success
-                    if (typeof MessageBox !== "undefined" && typeof MessageBox.success === "function") {
-                        try {
-                            MessageBox.success(sMessage, {
-                                title: "Success"
-                            });
-                            console.log("✓ MessageBox.success shown");
-                            return;
-                        } catch (e3) {
-                            console.warn("MessageBox.success failed:", e3);
-                        }
-                    }
-                    
+                } else {
                     // Last resort: alert
-                    console.error("All message display methods failed, using alert");
+                    console.error("MessageToast not available, using alert");
                     alert(sMessage);
-                }, 300);
+                }
                 
             }).catch(function(oError) {
                 oView.setBusy(false);
