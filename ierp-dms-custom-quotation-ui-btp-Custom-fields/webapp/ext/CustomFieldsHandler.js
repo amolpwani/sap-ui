@@ -35,32 +35,31 @@ sap.ui.define([
 
             var oModel = oContext.getModel();
             
-            // Get input field values from the fragment
-            var oMfgSiteInput = oView.byId("mfgSiteInput");
-            var oProtoTypeInput = oView.byId("protoTypeInput");
-            var oShipFromInput = oView.byId("shipFromInput");
+            // Get ComboBox controls from the fragment
+            var oMfgSiteCombo, oProtoTypeCombo, oShipFromCombo;
             
-            // If inputs not found by ID, try to find them in the fragment
-            if (!oMfgSiteInput) {
-                var aInputs = oButton.getParent().getParent().findAggregatedObjects(true, function(oControl) {
-                    return oControl.isA("sap.m.Input");
-                });
-                
-                if (aInputs.length >= 3) {
-                    oMfgSiteInput = aInputs[0];
-                    oProtoTypeInput = aInputs[1];
-                    oShipFromInput = aInputs[2];
-                }
+            // Try to find ComboBox controls
+            var aComboBoxes = oButton.getParent().getParent().findAggregatedObjects(true, function(oControl) {
+                return oControl.isA("sap.m.ComboBox");
+            });
+            
+            if (aComboBoxes.length >= 3) {
+                oMfgSiteCombo = aComboBoxes[0];
+                oProtoTypeCombo = aComboBoxes[1];
+                oShipFromCombo = aComboBoxes[2];
+            } else {
+                MessageBox.error("Unable to find dropdown controls.");
+                return;
             }
             
-            // Get values from inputs
-            var sMfgSiteCode = oMfgSiteInput ? oMfgSiteInput.getValue() : "";
-            var sProtoTypeSiteCode = oProtoTypeInput ? oProtoTypeInput.getValue() : "";
-            var sShipFromSiteCode = oShipFromInput ? oShipFromInput.getValue() : "";
+            // Get selected values from ComboBoxes
+            var sMfgSiteCode = oMfgSiteCombo ? oMfgSiteCombo.getSelectedKey() : "";
+            var sProtoTypeSiteCode = oProtoTypeCombo ? oProtoTypeCombo.getSelectedKey() : "";
+            var sShipFromSiteCode = oShipFromCombo ? oShipFromCombo.getSelectedKey() : "";
 
             // Validate that at least one field is filled
             if (!sMfgSiteCode && !sProtoTypeSiteCode && !sShipFromSiteCode) {
-                MessageBox.warning("Please fill at least one custom field before saving.");
+                MessageBox.warning("Please select at least one custom field before saving.");
                 return;
             }
 
@@ -68,15 +67,15 @@ sap.ui.define([
             var oData = oContext.getObject();
             var bHasChanges = false;
             
-            if (sMfgSiteCode !== oData.MfgSiteCode) {
+            if (sMfgSiteCode && sMfgSiteCode !== oData.MfgSiteCode) {
                 oContext.setProperty("MfgSiteCode", sMfgSiteCode);
                 bHasChanges = true;
             }
-            if (sProtoTypeSiteCode !== oData.ProtoTypeSiteCode) {
+            if (sProtoTypeSiteCode && sProtoTypeSiteCode !== oData.ProtoTypeSiteCode) {
                 oContext.setProperty("ProtoTypeSiteCode", sProtoTypeSiteCode);
                 bHasChanges = true;
             }
-            if (sShipFromSiteCode !== oData.ShipFromSiteCode) {
+            if (sShipFromSiteCode && sShipFromSiteCode !== oData.ShipFromSiteCode) {
                 oContext.setProperty("ShipFromSiteCode", sShipFromSiteCode);
                 bHasChanges = true;
             }
@@ -99,8 +98,12 @@ sap.ui.define([
                 if (sProtoTypeSiteCode) sMessage += "Proto Type: " + sProtoTypeSiteCode + "\n";
                 if (sShipFromSiteCode) sMessage += "Ship From: " + sShipFromSiteCode;
                 
-                MessageBox.success(sMessage);
-                MessageToast.show("Data saved successfully!");
+                MessageBox.success(sMessage, {
+                    title: "Success",
+                    onClose: function() {
+                        MessageToast.show("Data saved successfully!");
+                    }
+                });
                 
             }).catch(function(oError) {
                 oView.setBusy(false);

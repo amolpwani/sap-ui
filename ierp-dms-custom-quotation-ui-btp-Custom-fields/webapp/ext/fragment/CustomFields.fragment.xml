@@ -4,14 +4,14 @@
     xmlns:form="sap.ui.layout.form">
     
     <!-- Custom Fields Section with Professional Styling -->
-    <VBox class="sapUiMediumMargin">
+    <VBox class="sapUiSmallMargin">
         
         <form:SimpleForm 
             editable="true" 
             layout="ResponsiveGridLayout"
-            labelSpanXL="3"
+            labelSpanXL="2"
             labelSpanL="3"
-            labelSpanM="4"
+            labelSpanM="3"
             labelSpanS="12"
             emptySpanXL="0"
             emptySpanL="0"
@@ -20,55 +20,71 @@
             columnsXL="1"
             columnsL="1"
             columnsM="1"
-            columnsS="1"
-            class="sapUiResponsiveMargin">
+            columnsS="1">
             <form:content>
                 
                 <!-- MFG Site Dropdown -->
-                <Label text="MFG Site" required="true" design="Bold" />
-                <Input 
-                    id="mfgSiteInput"
-                    value="{MfgSiteCode}"
+                <Label text="MFG Site" required="true" />
+                <ComboBox 
+                    id="mfgSiteCombo"
+                    selectedKey="{MfgSiteCode}"
                     placeholder="Select Manufacturing Site"
-                    width="100%"
-                    maxLength="50"
-                    showValueHelp="false"
-                    editable="true" />
+                    width="300px"
+                    editable="true"
+                    showSecondaryValues="false">
+                    <items>
+                        <core:Item key="MfgSite_0" text="MfgSite_0" />
+                        <core:Item key="MfgSite_1" text="MfgSite_1" />
+                        <core:Item key="MfgSite_2" text="MfgSite_2" />
+                        <core:Item key="MfgSite_3" text="MfgSite_3" />
+                    </items>
+                </ComboBox>
 
                 <!-- Proto Type Dropdown -->
-                <Label text="Proto Type" required="true" design="Bold" />
-                <Input 
-                    id="protoTypeInput"
-                    value="{ProtoTypeSiteCode}"
+                <Label text="Proto Type" required="true" />
+                <ComboBox 
+                    id="protoTypeCombo"
+                    selectedKey="{ProtoTypeSiteCode}"
                     placeholder="Select Prototype Site"
-                    width="100%"
-                    maxLength="50"
-                    showValueHelp="false"
-                    editable="true" />
+                    width="300px"
+                    editable="true"
+                    showSecondaryValues="false">
+                    <items>
+                        <core:Item key="ProtoTy_0" text="ProtoTy_0" />
+                        <core:Item key="ProtoTy_1" text="ProtoTy_1" />
+                        <core:Item key="ProtoTy_2" text="ProtoTy_2" />
+                        <core:Item key="ProtoTy_3" text="ProtoTy_3" />
+                    </items>
+                </ComboBox>
 
                 <!-- Ship From Dropdown -->
-                <Label text="Ship From" required="true" design="Bold" />
-                <Input 
-                    id="shipFromInput"
-                    value="{ShipFromSiteCode}"
+                <Label text="Ship From" required="true" />
+                <ComboBox 
+                    id="shipFromCombo"
+                    selectedKey="{ShipFromSiteCode}"
                     placeholder="Select Ship From Site"
-                    width="100%"
-                    maxLength="50"
-                    showValueHelp="false"
-                    editable="true" />
+                    width="300px"
+                    editable="true"
+                    showSecondaryValues="false">
+                    <items>
+                        <core:Item key="ShipFro_0" text="ShipFro_0" />
+                        <core:Item key="ShipFro_1" text="ShipFro_1" />
+                        <core:Item key="ShipFro_2" text="ShipFro_2" />
+                        <core:Item key="ShipFro_3" text="ShipFro_3" />
+                    </items>
+                </ComboBox>
 
             </form:content>
         </form:SimpleForm>
         
-        <!-- Save Button with proper spacing -->
-        <Toolbar class="sapUiTinyMarginTop">
-            <ToolbarSpacer />
+        <!-- Save Button aligned to left -->
+        <HBox class="sapUiSmallMarginTop sapUiSmallMarginBegin">
             <Button 
                 id="saveCustomFieldsBtn"
                 text="Save Custom Fields" 
                 type="Emphasized" 
                 press="com.ford.quotation.ui.ext.CustomFieldsHandler.onSaveCustomFields"
                 icon="sap-icon://save" />
-        </Toolbar>
+        </HBox>
     </VBox>
 </core:FragmentDefinition>
