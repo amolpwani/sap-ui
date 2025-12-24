@@ -4,7 +4,7 @@
     xmlns:form="sap.ui.layout.form">
     
     <!-- Custom Fields Section - No Scrollbar -->
-    <VBox class="sapUiSmallMargin" height="auto">
+    <VBox class="sapUiSmallMargin" height="auto" fitContainer="false">
         
         <form:SimpleForm 
             editable="true" 

@@ -44,6 +44,13 @@
         }
     },
     "sap.ui5": {
+        "resources": {
+            "css": [
+                {
+                    "uri": "css/custom.css"
+                }
+            ]
+        },
         "dependencies": {
             "minUI5Version": "1.76.0",
             "libs": {

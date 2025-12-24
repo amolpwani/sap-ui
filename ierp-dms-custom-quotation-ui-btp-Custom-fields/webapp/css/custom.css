@@ -1,0 +1,28 @@
+/* Remove unnecessary scrollbars */
+.sapUxAPObjectPageLayout .sapUxAPObjectPageWrapper {
+    overflow: visible !important;
+}
+
+.sapUxAPObjectPageLayout .sapUxAPObjectPageContainer {
+    overflow: visible !important;
+}
+
+/* Custom Fields Section - No Scrollbar */
+.sapUiVBox {
+    overflow: visible !important;
+}
+
+.sapUiSimpleForm {
+    overflow: visible !important;
+}
+
+/* Ensure proper height */
+.sapUxAPObjectPageSection {
+    height: auto !important;
+    min-height: auto !important;
+}
+
+.sapUxAPObjectPageSubSection {
+    height: auto !important;
+    overflow: visible !important;
+}
