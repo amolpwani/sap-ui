@@ -92,18 +92,21 @@ sap.ui.define([
             oModel.submitBatch("updateGroup").then(function() {
                 oView.setBusy(false);
                 
-                // Show success message with saved values
-                var sMessage = "Custom fields saved successfully!\n\n";
-                if (sMfgSiteCode) sMessage += "MFG Site: " + sMfgSiteCode + "\n";
-                if (sProtoTypeSiteCode) sMessage += "Proto Type: " + sProtoTypeSiteCode + "\n";
+                // Show success toast message
+                var sMessage = "Custom fields saved successfully! ";
+                if (sMfgSiteCode) sMessage += "MFG Site: " + sMfgSiteCode + " ";
+                if (sProtoTypeSiteCode) sMessage += "Proto Type: " + sProtoTypeSiteCode + " ";
                 if (sShipFromSiteCode) sMessage += "Ship From: " + sShipFromSiteCode;
                 
-                MessageBox.success(sMessage, {
-                    title: "Success",
-                    onClose: function() {
-                        MessageToast.show("Data saved successfully!");
-                    }
+                MessageToast.show(sMessage, {
+                    duration: 3000,
+                    width: "25em"
                 });
+                
+                // Navigate back to list
+                setTimeout(function() {
+                    window.history.back();
+                }, 1000);
                 
             }).catch(function(oError) {
                 oView.setBusy(false);
