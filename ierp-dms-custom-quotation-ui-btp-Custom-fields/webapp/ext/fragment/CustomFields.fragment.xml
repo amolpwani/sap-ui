@@ -79,6 +79,7 @@
         
         <!-- Action Buttons -->
         <HBox class="sapUiSmallMarginTop sapUiSmallMarginBegin">
+            <!-- Back button: Navigates to QuotationHeaderList -->
             <Button 
                 id="backBtn"
                 text="Back to List" 

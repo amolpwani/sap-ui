@@ -9,22 +9,38 @@ sap.ui.define([
     return {
         /**
          * Handler for Back button
-         * Navigates back to the list
+         * Navigates to QuotationHeaderList
          */
         onBackPress: function(oEvent) {
-            var oHistory = History.getInstance();
-            var sPreviousHash = oHistory.getPreviousHash();
-            
-            if (sPreviousHash !== undefined) {
-                window.history.go(-1);
-            } else {
-                // If no history, navigate to root
+            try {
+                // Get the router from the component
+                var oComponent = oEvent.getSource().getModel().getComponent ? 
+                    oEvent.getSource().getModel().getComponent() : 
+                    sap.ui.core.Component.getOwnerComponentFor(oEvent.getSource());
+                
+                if (oComponent) {
+                    var oRouter = oComponent.getRouter();
+                    if (oRouter) {
+                        oRouter.navTo("QuotationHeaderList", {}, true);
+                        console.log("Navigated to QuotationHeaderList");
+                        return;
+                    }
+                }
+                
+                // Fallback: Try getting router directly
                 var oRouter = sap.ui.core.UIComponent.getRouterFor(oEvent.getSource());
                 if (oRouter) {
                     oRouter.navTo("QuotationHeaderList", {}, true);
-                } else {
-                    window.history.back();
+                    console.log("Navigated to QuotationHeaderList (fallback)");
+                    return;
                 }
+                
+                // Last resort: Use browser history
+                console.warn("Router not found, using browser history");
+                window.history.back();
+            } catch (e) {
+                console.error("Error navigating back:", e);
+                window.history.back();
             }
         },
 
@@ -42,7 +58,6 @@ sap.ui.define([
                 oView = oView.getParent();
             }
 
-            window.alert("Data saved successfully.");
             
             if (!oView) {
                 try {
