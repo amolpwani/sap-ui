@@ -43,7 +43,12 @@ sap.ui.define([
             }
             
             if (!oView) {
-                MessageBox.error("Unable to find view context.");
+                try {
+                    MessageBox.error("Unable to find view context.");
+                } catch (e) {
+                    alert("Unable to find view context.");
+                    console.error("MessageBox error:", e);
+                }
                 return;
             }
 
@@ -51,7 +56,12 @@ sap.ui.define([
             var oContext = oView.getBindingContext();
             
             if (!oContext) {
-                MessageBox.error("No quotation selected. Please select a quotation first.");
+                try {
+                    MessageBox.error("No quotation selected. Please select a quotation first.");
+                } catch (e) {
+                    alert("No quotation selected. Please select a quotation first.");
+                    console.error("MessageBox error:", e);
+                }
                 return;
             }
 
@@ -70,7 +80,12 @@ sap.ui.define([
                 oProtoTypeCombo = aComboBoxes[1];
                 oShipFromCombo = aComboBoxes[2];
             } else {
-                MessageBox.error("Unable to find dropdown controls.");
+                try {
+                    MessageBox.error("Unable to find dropdown controls.");
+                } catch (e) {
+                    alert("Unable to find dropdown controls.");
+                    console.error("MessageBox error:", e);
+                }
                 return;
             }
             
@@ -81,7 +96,12 @@ sap.ui.define([
 
             // Validate that at least one field is filled
             if (!sMfgSiteCode && !sProtoTypeSiteCode && !sShipFromSiteCode) {
-                MessageBox.warning("Please select at least one custom field before saving.");
+                try {
+                    MessageBox.warning("Please select at least one custom field before saving.");
+                } catch (e) {
+                    alert("Please select at least one custom field before saving.");
+                    console.error("MessageBox error:", e);
+                }
                 return;
             }
 
@@ -103,7 +123,12 @@ sap.ui.define([
             }
 
             if (!bHasChanges) {
-                MessageToast.show("No changes detected.");
+                try {
+                    MessageToast.show("No changes detected.");
+                } catch (e) {
+                    console.log("No changes detected.");
+                    console.error("MessageToast error:", e);
+                }
                 return;
             }
 
@@ -125,14 +150,17 @@ sap.ui.define([
                     sMessage += " | " + aValues.join(", ");
                 }
                 
-                // Show success toast with better positioning
-                MessageToast.show(sMessage, {
-                    duration: 5000,
-                    width: "auto",
-                    my: "center center",
-                    at: "center center",
-                    of: window
-                });
+                // Show success toast - use simple approach
+                try {
+                    MessageToast.show(sMessage, {
+                        duration: 5000
+                    });
+                } catch (e) {
+                    // Fallback if MessageToast fails
+                    console.error("MessageToast error:", e);
+                    // Use alert as last resort
+                    alert(sMessage);
+                }
                 
                 // Log to console
                 console.log("✓ Save successful:", sMessage);
@@ -145,7 +173,12 @@ sap.ui.define([
                     sErrorMessage += "\n\nError: " + oError.message;
                 }
                 
-                MessageBox.error(sErrorMessage);
+                try {
+                    MessageBox.error(sErrorMessage);
+                } catch (e) {
+                    alert(sErrorMessage);
+                    console.error("MessageBox error:", e);
+                }
                 console.error("Save error:", oError);
             });
         }
