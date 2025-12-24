@@ -20,7 +20,7 @@
     "ui5-task-zipper": "^3.4.x"
   },
   "scripts": {
-    "start": "fiori run --open \"test/flp.html#app-preview\"",
+    "start": "npx @ui5/cli serve --port 3000 --config ui5-local.yaml --open \"index.html\"",
     "start-local": "fiori run --config ./ui5-local.yaml --open \"test/flp.html#app-preview\"",
     "build": "ui5 build --config=ui5.yaml --clean-dest --dest dist",
     "start-mock": "fiori run --config ./ui5-mock.yaml --open \"test/flp.html#app-preview\"",

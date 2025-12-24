@@ -1,57 +1,74 @@
 <core:FragmentDefinition 
     xmlns:core="sap.ui.core" 
     xmlns="sap.m" 
-    xmlns:macros="sap.fe.macros"
     xmlns:form="sap.ui.layout.form">
     
-    <!-- Custom Fields Tab Content - 3 Dropdowns -->
-    <VBox class="sapUiSmallMargin">
+    <!-- Custom Fields Section with Professional Styling -->
+    <VBox class="sapUiMediumMargin">
         
         <form:SimpleForm 
             editable="true" 
             layout="ResponsiveGridLayout"
-            labelSpanXL="4"
-            labelSpanL="4"
+            labelSpanXL="3"
+            labelSpanL="3"
             labelSpanM="4"
+            labelSpanS="12"
             emptySpanXL="0"
             emptySpanL="0"
             emptySpanM="0"
+            emptySpanS="0"
             columnsXL="1"
             columnsL="1"
-            columnsM="1">
+            columnsM="1"
+            columnsS="1"
+            class="sapUiResponsiveMargin">
             <form:content>
                 
                 <!-- MFG Site Dropdown -->
-                <Label text="MFG Site" required="true" />
-                <macros:Field 
-                    id="mfgSiteField" 
-                    metaPath="MfgSiteCode" 
-                    editMode="Editable" />
-
-                <!-- Ship From Dropdown -->
-                <Label text="Ship From" required="true" />
-                <macros:Field 
-                    id="shipFromField" 
-                    metaPath="ShipFromSiteCode" 
-                    editMode="Editable" />
+                <Label text="MFG Site" required="true" design="Bold" />
+                <Input 
+                    id="mfgSiteInput"
+                    value="{MfgSiteCode}"
+                    placeholder="Select Manufacturing Site"
+                    width="100%"
+                    maxLength="50"
+                    showValueHelp="false"
+                    editable="true" />
 
                 <!-- Proto Type Dropdown -->
-                <Label text="Proto Type" required="true" />
-                <macros:Field 
-                    id="protoTypeField" 
-                    metaPath="ProtoTypeSiteCode" 
-                    editMode="Editable" />
+                <Label text="Proto Type" required="true" design="Bold" />
+                <Input 
+                    id="protoTypeInput"
+                    value="{ProtoTypeSiteCode}"
+                    placeholder="Select Prototype Site"
+                    width="100%"
+                    maxLength="50"
+                    showValueHelp="false"
+                    editable="true" />
+
+                <!-- Ship From Dropdown -->
+                <Label text="Ship From" required="true" design="Bold" />
+                <Input 
+                    id="shipFromInput"
+                    value="{ShipFromSiteCode}"
+                    placeholder="Select Ship From Site"
+                    width="100%"
+                    maxLength="50"
+                    showValueHelp="false"
+                    editable="true" />
 
             </form:content>
         </form:SimpleForm>
         
-        <!-- Save Button -->
-        <HBox justifyContent="End" class="sapUiSmallMarginTop">
+        <!-- Save Button with proper spacing -->
+        <Toolbar class="sapUiTinyMarginTop">
+            <ToolbarSpacer />
             <Button 
+                id="saveCustomFieldsBtn"
                 text="Save Custom Fields" 
                 type="Emphasized" 
                 press="com.ford.quotation.ui.ext.CustomFieldsHandler.onSaveCustomFields"
                 icon="sap-icon://save" />
-        </HBox>
+        </Toolbar>
     </VBox>
 </core:FragmentDefinition>
