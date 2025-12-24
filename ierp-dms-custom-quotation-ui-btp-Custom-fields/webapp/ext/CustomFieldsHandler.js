@@ -1,8 +1,9 @@
 sap.ui.define([
     "sap/m/MessageToast",
     "sap/m/MessageBox",
-    "sap/ui/core/Fragment"
-], function(MessageToast, MessageBox, Fragment) {
+    "sap/ui/core/Fragment",
+    "sap/ui/core/routing/History"
+], function(MessageToast, MessageBox, Fragment, History) {
     'use strict';
 
     return {
@@ -11,7 +12,20 @@ sap.ui.define([
          * Navigates back to the list
          */
         onBackPress: function(oEvent) {
-            window.history.back();
+            var oHistory = History.getInstance();
+            var sPreviousHash = oHistory.getPreviousHash();
+            
+            if (sPreviousHash !== undefined) {
+                window.history.go(-1);
+            } else {
+                // If no history, navigate to root
+                var oRouter = sap.ui.core.UIComponent.getRouterFor(oEvent.getSource());
+                if (oRouter) {
+                    oRouter.navTo("QuotationHeaderList", {}, true);
+                } else {
+                    window.history.back();
+                }
+            }
         },
 
         /**
@@ -101,24 +115,36 @@ sap.ui.define([
                 oView.setBusy(false);
                 
                 // Build success message
-                var sMessage = "✓ Custom fields saved successfully!";
+                var sMessage = "Custom fields saved successfully!";
                 var aValues = [];
                 if (sMfgSiteCode) aValues.push("MFG: " + sMfgSiteCode);
                 if (sProtoTypeSiteCode) aValues.push("Proto: " + sProtoTypeSiteCode);
                 if (sShipFromSiteCode) aValues.push("Ship: " + sShipFromSiteCode);
                 
                 if (aValues.length > 0) {
-                    sMessage += " [" + aValues.join(", ") + "]";
+                    sMessage += " - " + aValues.join(", ");
                 }
                 
-                // Show success toast
-                MessageToast.show(sMessage, {
-                    duration: 4000,
-                    width: "30em",
-                    at: "center bottom"
-                });
+                // Force toast to show by using setTimeout
+                setTimeout(function() {
+                    MessageToast.show(sMessage, {
+                        duration: 5000,
+                        width: "35em",
+                        my: "center bottom",
+                        at: "center bottom",
+                        of: window,
+                        offset: "0 -50"
+                    });
+                }, 100);
                 
-                console.log("Save successful:", sMessage);
+                // Also log to console
+                console.log("✓ Save successful:", sMessage);
+                
+                // Show a visual confirmation in the UI
+                MessageBox.information(sMessage, {
+                    title: "Success",
+                    styleClass: "sapUiSizeCompact"
+                });
                 
             }).catch(function(oError) {
                 oView.setBusy(false);
