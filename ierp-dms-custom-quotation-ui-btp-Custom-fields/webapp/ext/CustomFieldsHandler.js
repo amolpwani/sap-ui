@@ -134,6 +134,9 @@ sap.ui.define([
 
             // Show busy indicator
             oView.setBusy(true);
+            
+            // Capture button reference for toast positioning
+            var oSaveButton = oEvent.getSource();
 
             // Submit the changes
             oModel.submitBatch("updateGroup").then(function() {
@@ -150,20 +153,56 @@ sap.ui.define([
                     sMessage += " | " + aValues.join(", ");
                 }
                 
-                // Show success toast - use simple approach
-                try {
-                    MessageToast.show(sMessage, {
-                        duration: 5000
-                    });
-                } catch (e) {
-                    // Fallback if MessageToast fails
-                    console.error("MessageToast error:", e);
-                    // Use alert as last resort
-                    alert(sMessage);
-                }
-                
-                // Log to console
+                // Log to console first
                 console.log("✓ Save successful:", sMessage);
+                console.log("MessageToast available:", typeof MessageToast !== "undefined");
+                console.log("MessageToast.show available:", typeof MessageToast.show === "function");
+                
+                // Show success message - try multiple approaches
+                setTimeout(function() {
+                    // First try: MessageToast with button reference
+                    if (typeof MessageToast !== "undefined" && typeof MessageToast.show === "function") {
+                        try {
+                            MessageToast.show(sMessage, {
+                                duration: 5000,
+                                width: "auto",
+                                my: "center bottom",
+                                at: "center bottom",
+                                of: oSaveButton
+                            });
+                            console.log("✓ MessageToast shown successfully");
+                            return;
+                        } catch (e1) {
+                            console.warn("MessageToast with button failed:", e1);
+                        }
+                        
+                        // Second try: MessageToast simple
+                        try {
+                            MessageToast.show(sMessage);
+                            console.log("✓ MessageToast shown (simple)");
+                            return;
+                        } catch (e2) {
+                            console.warn("MessageToast simple failed:", e2);
+                        }
+                    }
+                    
+                    // Third try: MessageBox.success
+                    if (typeof MessageBox !== "undefined" && typeof MessageBox.success === "function") {
+                        try {
+                            MessageBox.success(sMessage, {
+                                title: "Success"
+                            });
+                            console.log("✓ MessageBox.success shown");
+                            return;
+                        } catch (e3) {
+                            console.warn("MessageBox.success failed:", e3);
+                        }
+                    }
+                    
+                    // Last resort: alert
+                    console.error("All message display methods failed, using alert");
+                    alert(sMessage);
+                }, 300);
                 
             }).catch(function(oError) {
                 oView.setBusy(false);
