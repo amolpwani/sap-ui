@@ -115,36 +115,27 @@ sap.ui.define([
                 oView.setBusy(false);
                 
                 // Build success message
-                var sMessage = "Custom fields saved successfully!";
+                var sMessage = "✓ Custom fields saved successfully!";
                 var aValues = [];
                 if (sMfgSiteCode) aValues.push("MFG: " + sMfgSiteCode);
                 if (sProtoTypeSiteCode) aValues.push("Proto: " + sProtoTypeSiteCode);
                 if (sShipFromSiteCode) aValues.push("Ship: " + sShipFromSiteCode);
                 
                 if (aValues.length > 0) {
-                    sMessage += " - " + aValues.join(", ");
+                    sMessage += " | " + aValues.join(", ");
                 }
                 
-                // Force toast to show by using setTimeout
-                setTimeout(function() {
-                    MessageToast.show(sMessage, {
-                        duration: 5000,
-                        width: "35em",
-                        my: "center bottom",
-                        at: "center bottom",
-                        of: window,
-                        offset: "0 -50"
-                    });
-                }, 100);
-                
-                // Also log to console
-                console.log("✓ Save successful:", sMessage);
-                
-                // Show a visual confirmation in the UI
-                MessageBox.information(sMessage, {
-                    title: "Success",
-                    styleClass: "sapUiSizeCompact"
+                // Show success toast with better positioning
+                MessageToast.show(sMessage, {
+                    duration: 5000,
+                    width: "auto",
+                    my: "center center",
+                    at: "center center",
+                    of: window
                 });
+                
+                // Log to console
+                console.log("✓ Save successful:", sMessage);
                 
             }).catch(function(oError) {
                 oView.setBusy(false);
