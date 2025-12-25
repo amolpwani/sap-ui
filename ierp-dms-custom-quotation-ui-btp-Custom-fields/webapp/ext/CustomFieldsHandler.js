@@ -9,30 +9,22 @@ sap.ui.define([
     return {
         /**
          * Handler for Back button
-         * Navigates to QuotationHeaderList
+         * Navigates to QuotationHeaderList using Delete button action pattern
          */
         onBackPress: function(oEvent) {
-            // Get component and router
-            var oComponent = sap.ui.core.Component.getOwnerComponentFor(oEvent.getSource());
-            if (!oComponent) {
-                oComponent = oEvent.getSource().getModel().oComponent;
-            }
-            
-            if (oComponent) {
-                var oRouter = oComponent.getRouter();
-                if (oRouter) {
-                    oRouter.navTo("QuotationHeaderList", {}, true);
-                    return;
-                }
-            }
-            
-            // Fallback: Direct router access
+            // Use Delete button pattern: Get router and navigate
             var oRouter = sap.ui.core.UIComponent.getRouterFor(oEvent.getSource());
             if (oRouter) {
                 oRouter.navTo("QuotationHeaderList", {}, true);
             } else {
-                // Last resort: Navigate to root
-                window.location.href = "#/";
+                // Fallback: Get component router
+                var oComponent = sap.ui.core.Component.getOwnerComponentFor(oEvent.getSource());
+                if (oComponent && oComponent.getRouter) {
+                    oComponent.getRouter().navTo("QuotationHeaderList", {}, true);
+                } else {
+                    // Last resort: Navigate to root
+                    window.location.href = "#/";
+                }
             }
         },
 
@@ -142,14 +134,28 @@ sap.ui.define([
                     sMessage += " - " + aValues.join(", ");
                 }
                 
-                // Show success message - ensure it displays
-                try {
-                    MessageToast.show(sMessage);
-                } catch (e) {
-                    // If MessageToast fails, use alert as immediate fallback
-                    alert(sMessage);
-                    console.error("MessageToast error:", e);
-                }
+                // Use Delete button pattern: Show MessageBox.success dialog
+                MessageBox.success(sMessage, {
+                    title: "Success",
+                    onClose: function() {
+                        // After dialog closes, navigate to list (Delete button pattern)
+                        var oRouter = sap.ui.core.UIComponent.getRouterFor(oSaveButton);
+                        if (oRouter) {
+                            oRouter.navTo("QuotationHeaderList", {}, true);
+                        } else {
+                            // Fallback: Get component router
+                            var oComponent = sap.ui.core.Component.getOwnerComponentFor(oSaveButton);
+                            if (oComponent && oComponent.getRouter) {
+                                oComponent.getRouter().navTo("QuotationHeaderList", {}, true);
+                            } else {
+                                window.location.href = "#/";
+                            }
+                        }
+                    }
+                });
+                
+                // Also show MessageToast for immediate feedback (Delete button pattern)
+                MessageToast.show(sMessage);
                 
                 // Log to console
                 console.log("✓ Save successful:", sMessage);
