@@ -123,7 +123,7 @@ sap.ui.define([
             oModel.submitBatch("updateGroup").then(function() {
                 oView.setBusy(false);
                 
-                // Build success message
+                // Build success message (same format as Delete button)
                 var sMessage = "Custom fields saved successfully!";
                 var aValues = [];
                 if (sMfgSiteCode) aValues.push("MFG: " + sMfgSiteCode);
@@ -134,28 +134,33 @@ sap.ui.define([
                     sMessage += " - " + aValues.join(", ");
                 }
                 
-                // Use Delete button pattern: Show MessageBox.success dialog
+                // Use exact Delete button pattern: MessageBox with onClose navigation
+                // MessageBox.success automatically has OK button, use onClose like Delete button
                 MessageBox.success(sMessage, {
                     title: "Success",
-                    onClose: function() {
-                        // After dialog closes, navigate to list (Delete button pattern)
+                    onClose: function(sAction) {
+                        // Navigate to list after dialog closes (same as Delete button pattern)
                         var oRouter = sap.ui.core.UIComponent.getRouterFor(oSaveButton);
                         if (oRouter) {
                             oRouter.navTo("QuotationHeaderList", {}, true);
                         } else {
-                            // Fallback: Get component router
-                            var oComponent = sap.ui.core.Component.getOwnerComponentFor(oSaveButton);
-                            if (oComponent && oComponent.getRouter) {
-                                oComponent.getRouter().navTo("QuotationHeaderList", {}, true);
+                            // Fallback: Use History pattern like Delete button
+                            var oHistory = History.getInstance();
+                            var sPreviousHash = oHistory.getPreviousHash();
+                            if (sPreviousHash !== undefined) {
+                                window.history.go(-1);
                             } else {
-                                window.location.href = "#/";
+                                // Navigate to list route
+                                var oComponent = sap.ui.core.Component.getOwnerComponentFor(oSaveButton);
+                                if (oComponent && oComponent.getRouter) {
+                                    oComponent.getRouter().navTo("QuotationHeaderList", {}, true);
+                                } else {
+                                    window.location.href = "#/";
+                                }
                             }
                         }
                     }
                 });
-                
-                // Also show MessageToast for immediate feedback (Delete button pattern)
-                MessageToast.show(sMessage);
                 
                 // Log to console
                 console.log("✓ Save successful:", sMessage);
