@@ -9,25 +9,30 @@ sap.ui.define([
     return {
         /**
          * Handler for Back button
-         * Navigates to QuotationHeaderList using FPM History component
+         * Navigates to QuotationHeaderList
          */
         onBackPress: function(oEvent) {
-            // Use FPM History component for navigation
-            var oHistory = History.getInstance();
-            var sPreviousHash = oHistory.getPreviousHash();
+            // Get component and router
+            var oComponent = sap.ui.core.Component.getOwnerComponentFor(oEvent.getSource());
+            if (!oComponent) {
+                oComponent = oEvent.getSource().getModel().oComponent;
+            }
             
-            if (sPreviousHash !== undefined) {
-                // Navigate back in browser history
-                window.history.go(-1);
-            } else {
-                // If no history, navigate to list using router
-                var oRouter = sap.ui.core.UIComponent.getRouterFor(oEvent.getSource());
+            if (oComponent) {
+                var oRouter = oComponent.getRouter();
                 if (oRouter) {
                     oRouter.navTo("QuotationHeaderList", {}, true);
-                } else {
-                    // Last resort: Use browser history
-                    window.history.back();
+                    return;
                 }
+            }
+            
+            // Fallback: Direct router access
+            var oRouter = sap.ui.core.UIComponent.getRouterFor(oEvent.getSource());
+            if (oRouter) {
+                oRouter.navTo("QuotationHeaderList", {}, true);
+            } else {
+                // Last resort: Navigate to root
+                window.location.href = "#/";
             }
         },
 
@@ -127,22 +132,24 @@ sap.ui.define([
                 oView.setBusy(false);
                 
                 // Build success message
-                var sMessage = "✓ Custom fields saved successfully!";
+                var sMessage = "Custom fields saved successfully!";
                 var aValues = [];
                 if (sMfgSiteCode) aValues.push("MFG: " + sMfgSiteCode);
                 if (sProtoTypeSiteCode) aValues.push("Proto: " + sProtoTypeSiteCode);
                 if (sShipFromSiteCode) aValues.push("Ship: " + sShipFromSiteCode);
                 
                 if (aValues.length > 0) {
-                    sMessage += " | " + aValues.join(", ");
+                    sMessage += " - " + aValues.join(", ");
                 }
                 
-                // Show success message using FPM MessageToast pattern
-                // FPM best practice: Use MessageToast for transient success messages
-                MessageToast.show(sMessage, {
-                    duration: 5000,
-                    width: "auto"
-                });
+                // Show success message - ensure it displays
+                try {
+                    MessageToast.show(sMessage);
+                } catch (e) {
+                    // If MessageToast fails, use alert as immediate fallback
+                    alert(sMessage);
+                    console.error("MessageToast error:", e);
+                }
                 
                 // Log to console
                 console.log("✓ Save successful:", sMessage);
