@@ -9,38 +9,25 @@ sap.ui.define([
     return {
         /**
          * Handler for Back button
-         * Navigates to QuotationHeaderList
+         * Navigates to QuotationHeaderList using FPM History component
          */
         onBackPress: function(oEvent) {
-            try {
-                // Get the router from the component
-                var oComponent = oEvent.getSource().getModel().getComponent ? 
-                    oEvent.getSource().getModel().getComponent() : 
-                    sap.ui.core.Component.getOwnerComponentFor(oEvent.getSource());
-                
-                if (oComponent) {
-                    var oRouter = oComponent.getRouter();
-                    if (oRouter) {
-                        oRouter.navTo("QuotationHeaderList", {}, true);
-                        console.log("Navigated to QuotationHeaderList");
-                        return;
-                    }
-                }
-                
-                // Fallback: Try getting router directly
+            // Use FPM History component for navigation
+            var oHistory = History.getInstance();
+            var sPreviousHash = oHistory.getPreviousHash();
+            
+            if (sPreviousHash !== undefined) {
+                // Navigate back in browser history
+                window.history.go(-1);
+            } else {
+                // If no history, navigate to list using router
                 var oRouter = sap.ui.core.UIComponent.getRouterFor(oEvent.getSource());
                 if (oRouter) {
                     oRouter.navTo("QuotationHeaderList", {}, true);
-                    console.log("Navigated to QuotationHeaderList (fallback)");
-                    return;
+                } else {
+                    // Last resort: Use browser history
+                    window.history.back();
                 }
-                
-                // Last resort: Use browser history
-                console.warn("Router not found, using browser history");
-                window.history.back();
-            } catch (e) {
-                console.error("Error navigating back:", e);
-                window.history.back();
             }
         },
 
@@ -60,12 +47,8 @@ sap.ui.define([
 
             
             if (!oView) {
-                try {
-                    MessageBox.error("Unable to find view context.");
-                } catch (e) {
-                    alert("Unable to find view context.");
-                    console.error("MessageBox error:", e);
-                }
+                // Use FPM MessageBox for errors
+                MessageBox.error("Unable to find view context.");
                 return;
             }
 
@@ -73,12 +56,8 @@ sap.ui.define([
             var oContext = oView.getBindingContext();
             
             if (!oContext) {
-                try {
-                    MessageBox.error("No quotation selected. Please select a quotation first.");
-                } catch (e) {
-                    alert("No quotation selected. Please select a quotation first.");
-                    console.error("MessageBox error:", e);
-                }
+                // Use FPM MessageBox for errors
+                MessageBox.error("No quotation selected. Please select a quotation first.");
                 return;
             }
 
@@ -97,12 +76,8 @@ sap.ui.define([
                 oProtoTypeCombo = aComboBoxes[1];
                 oShipFromCombo = aComboBoxes[2];
             } else {
-                try {
-                    MessageBox.error("Unable to find dropdown controls.");
-                } catch (e) {
-                    alert("Unable to find dropdown controls.");
-                    console.error("MessageBox error:", e);
-                }
+                // Use FPM MessageBox for errors
+                MessageBox.error("Unable to find dropdown controls.");
                 return;
             }
             
@@ -113,12 +88,8 @@ sap.ui.define([
 
             // Validate that at least one field is filled
             if (!sMfgSiteCode && !sProtoTypeSiteCode && !sShipFromSiteCode) {
-                try {
-                    MessageBox.warning("Please select at least one custom field before saving.");
-                } catch (e) {
-                    alert("Please select at least one custom field before saving.");
-                    console.error("MessageBox error:", e);
-                }
+                // Use FPM MessageBox for warnings
+                MessageBox.warning("Please select at least one custom field before saving.");
                 return;
             }
 
@@ -140,12 +111,8 @@ sap.ui.define([
             }
 
             if (!bHasChanges) {
-                try {
-                    MessageToast.show("No changes detected.");
-                } catch (e) {
-                    console.log("No changes detected.");
-                    console.error("MessageToast error:", e);
-                }
+                // Use FPM MessageToast for user feedback
+                MessageToast.show("No changes detected.");
                 return;
             }
 
@@ -170,74 +137,26 @@ sap.ui.define([
                     sMessage += " | " + aValues.join(", ");
                 }
                 
-                // Log to console first
-                console.log("✓ Save successful:", sMessage);
-                console.log("MessageToast available:", typeof MessageToast !== "undefined");
-                console.log("MessageToast.show available:", typeof MessageToast.show === "function");
+                // Show success message using FPM MessageToast pattern
+                // FPM best practice: Use MessageToast for transient success messages
+                MessageToast.show(sMessage, {
+                    duration: 5000,
+                    width: "auto"
+                });
                 
-                // Show success message - try multiple approaches
-                // First try: MessageToast with button reference
-                if (typeof MessageToast !== "undefined" && typeof MessageToast.show === "function") {
-                    try {
-                        MessageToast.show(sMessage, {
-                            duration: 5000,
-                            width: "auto",
-                            my: "center bottom",
-                            at: "center bottom",
-                            of: oSaveButton
-                        });
-                        console.log("✓ MessageToast shown successfully");
-                    } catch (e1) {
-                        console.warn("MessageToast with button failed:", e1);
-                        
-                        // Second try: MessageToast simple
-                        try {
-                            MessageToast.show(sMessage);
-                            console.log("✓ MessageToast shown (simple)");
-                        } catch (e2) {
-                            console.warn("MessageToast simple failed:", e2);
-                            
-                            // Third try: MessageBox.success
-                            if (typeof MessageBox !== "undefined" && typeof MessageBox.success === "function") {
-                                try {
-                                    MessageBox.success(sMessage, {
-                                        title: "Success"
-                                    });
-                                    console.log("✓ MessageBox.success shown");
-                                } catch (e3) {
-                                    console.warn("MessageBox.success failed:", e3);
-                                    
-                                    // Last resort: alert
-                                    console.error("All message display methods failed, using alert");
-                                    alert(sMessage);
-                                }
-                            } else {
-                                // Last resort: alert
-                                console.error("MessageBox not available, using alert");
-                                alert(sMessage);
-                            }
-                        }
-                    }
-                } else {
-                    // Last resort: alert
-                    console.error("MessageToast not available, using alert");
-                    alert(sMessage);
-                }
+                // Log to console
+                console.log("✓ Save successful:", sMessage);
                 
             }).catch(function(oError) {
                 oView.setBusy(false);
                 
+                // Use FPM MessageBox for error display
                 var sErrorMessage = "Failed to save custom fields.";
                 if (oError && oError.message) {
                     sErrorMessage += "\n\nError: " + oError.message;
                 }
                 
-                try {
-                    MessageBox.error(sErrorMessage);
-                } catch (e) {
-                    alert(sErrorMessage);
-                    console.error("MessageBox error:", e);
-                }
+                MessageBox.error(sErrorMessage);
                 console.error("Save error:", oError);
             });
         }
